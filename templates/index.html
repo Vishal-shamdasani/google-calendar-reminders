@@ -1,0 +1,64 @@
+<!doctype html>
+<html>
+<meta http-equiv="refresh" content="15">
+<head>
+    <title>Upcoming Events</title>
+    <style>
+        body {
+            font-family: Arial, sans-serif;
+        }
+
+        .event-card {
+            border: 1px solid #ccc;
+            margin: 15px;
+            padding: 15px;
+            border-radius: 8px;
+            background-color: #f9f9f9;
+        }
+
+        .event-card h2 {
+            margin-top: 0;
+        }
+
+        ul {
+            margin-top: 5px;
+        }
+    </style>
+</head>
+
+<body>
+    <h1>Upcoming Google Calendar Events</h1>
+
+    {% for event in events %}
+    <div class="event-card">
+        <h2>{{ event.summary or "No Title" }}</h2>
+
+        <p>{{ event.start_time_pretty }} to {{ event.end_time_pretty }}</p>
+
+        <p><strong>Description:</strong> {{ event.description or 'N/A' }}</p>
+        <p><strong>Location:</strong> {{ event.location or 'N/A' }}</p>
+        <p><strong>Organizer:</strong> {{ event.organizer.email or 'N/A' }}</p>
+        <p><strong>Created by:</strong> {{ event.creator.email or 'N/A' }}</p>
+        <p><strong>Google Meet Link:</strong>
+            {% if event.hangoutLink %}
+            <a href="{{ event.hangoutLink }}" target="_blank">Join</a>
+            {% else %}
+            N/A
+            {% endif %}
+        </p>
+        <p><strong>View in Calendar:</strong> <a href="{{ event.htmlLink }}" target="_blank">Open</a></p>
+
+        {% if event.attendees %}
+        <p><strong>Attendees:</strong></p>
+        <ul>
+            {% for attendee in event.attendees %}
+            <li>{{ attendee.email }} ({{ attendee.responseStatus }})</li>
+            {% endfor %}
+        </ul>
+        {% endif %}
+    </div>
+    {% endfor %}
+
+</body>
+
+</html>
