@@ -29,11 +29,17 @@ logger = logging.getLogger(__name__)
 app = Flask(__name__)
 
 
-load_dotenv(dotenv_path=r"\google-calendar-reminders\.env")
+if os.path.exists(".env"):
+    load_dotenv()
 event_cache = []  # Temporary global list of events
 # Setup OAuth flow
 app.secret_key = os.getenv("FLASK_SECRET_KEY")
 url = os.getenv("PUBLIC_URL")
+
+credentials_data = json.loads(os.environ.get("CREDENTIALS_JSON"))
+with open("credentials.json", "w") as f:
+    json.dump(credentials_data, f)
+
 flow = Flow.from_client_secrets_file(
     'credentials.json',
     scopes=['https://www.googleapis.com/auth/calendar.readonly'],
@@ -227,5 +233,5 @@ if __name__ == '__main__':
     scheduler.add_job(check_for_upcoming_events, 'interval', minutes=1)  # Check every minute
     scheduler.start()
     
-    app.run(debug=True)
+    app.run(host="0.0.0.0", port=int(os.environ.get("PORT", 5000)))
 
