@@ -49,6 +49,8 @@ flow = Flow.from_client_secrets_file(
 os.environ['OAUTHLIB_INSECURE_TRANSPORT'] = '1'
 @app.route('/')
 def index():
+    if url =="None":
+        return render_template("error.html")
     global event_cache
     if not event_cache:
         if 'credentials' not in session:
